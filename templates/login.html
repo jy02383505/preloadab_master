@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Greenland</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="{{ static_url('css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ static_url('css/bootstrap-responsive.min.css')}}" rel="stylesheet">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//cdnjs.bootcss.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ static_url('ico/apple-touch-icon-144-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ static_url('ico/apple-touch-icon-72-precomposed.png') }}">
+    <link rel="apple-touch-icon-precomposed" href="{{static_url('ico/apple-touch-icon-57-precomposed.png') }}">
+    <link rel="shortcut icon" href="{{ static_url('ico/favicon.png') }}">
+
+    <style type="text/css">
+      body ,html{
+          height: 100%;
+          background-repeat: no-repeat;
+          background-image: linear-gradient(rgb(35, 148, 195), rgb(16, 16, 16));
+      }
+      .card-container.card {
+        max-width: 350px;
+        padding: 40px 40px;
+      }
+      .btn {
+          font-weight: 700;
+          height: 36px;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          user-select: none;
+          cursor: default;
+      }
+      .card {
+          background-color: #F7F7F7;
+          /* just in case there no content*/
+          padding: 20px 25px 30px;
+          margin: 0 auto 25px;
+          margin-top: 100px;
+          /* shadows and rounded borders */
+          -moz-border-radius: 2px;
+          -webkit-border-radius: 2px;
+          border-radius: 2px;
+          -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+          -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+          box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+      }
+
+      .profile-img-card {
+          width: 96px;
+          height: 96px;
+          margin: 0 auto 10px;
+          display: block;
+          -moz-border-radius: 50%;
+          -webkit-border-radius: 50%;
+          border-radius: 50%;
+      }
+      .form-signin {
+        max-width: 330px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #fff;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
+      }
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
+      }
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
+      }
+
+    </style>
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//cdnjs.bootcss.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+
+  </head>
+
+  <body>
+
+    <div class="container" style="position:relative;top:100px;">
+      <form class="form-signin" action="https://sso.chinacache.com/?clientName={{client_html}}" method="post">
+        <h1 ><strong>Preloadab</strong></h1>
+        <p class="text-error">请登录</p>
+        <p class="text-error"><small>本平台支持浏览器: Firefox ,Chrome ,IE8</small></p>
+        <input type="text" name="username" class="input-block-level" placeholder="Email address" required="required">
+        <input type="password" name="password" class="input-block-level" placeholder="Password" required="required">
+        <p class="text-error"><small>如果登录不上，请检测您的用户名和密码</small></p>
+	<label class="checkbox">
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-large btn-primary" type="submit">登录</button>
+        {% if error == 'error' %}
+              
+              <font color="red">用户名或者密码存在错误,请重新输入！  </font>
+        {%end%}
+      </form>
+
+
+    </div> <!-- /container -->
+    <a style="position:relative;left:820px;top:110px;">2016 © 北京蓝汛通信技术有限责任公司 .</a>
+    <script type="text/javascript">
+
+    </script>
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+  </body>
+</html>

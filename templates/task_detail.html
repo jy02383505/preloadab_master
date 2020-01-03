@@ -1,0 +1,67 @@
+<link href="{{ static_url('css/style.css')}}" rel="stylesheet">
+
+<div id="container" style="width: 1200px;">
+    <div class="middle-div">
+
+        <div class='div-table' id="table-devices">
+             <div class='div-head'>
+                <div class='div-th' style='width: 20%;' >组号</div>
+                <div class='div-th' style='width: 20%;' >URL执行总数</div>
+                <div class='div-th' style='width: 15%;' >error总数</div>
+                <div class='div-th' style='width: 15%;' >404总数</div>
+                <div class='div-th' style='width: 30%;' >qps总数</div>
+             </div>
+            {% for c in total_num %}
+                <div class='div-tr level0' id='tr0'>
+                    <div class='div-td' style='width: 20%'>{{c[0]+1}} 组</div>
+                    <div class='div-td' style='width: 20%'>{{c[1]}} 条</div>
+                    <div class='div-td' style='width: 15%'>{{error_data[c[0]]}}</div>
+                    <div class='div-td' style='width: 15%'>{{not_found_data[c[0]]}}</div>
+                    <div class='div-td' style='width: 30%'>{{qps_data[c[0]]}}</div>
+                </div>
+            {% end %}
+        </div>
+        </br>
+
+        <div class='clear'></div>
+        <div class='div-table' id="table-devices">
+             <div class='div-head'>
+                <div class='div-th' style='width: 10%;' >client group</div>
+                <div class='div-th' style='width: 10%;' >client</div>
+                <div class='div-th' style='width: 10%;' >server ip</div>
+                <div class='div-th' style='width: 10%;' >success num</div>
+                <div class='div-th' style='width: 10%;' >error num</div>
+                <div class='div-th' style='width: 10%;' >404 num</div>
+                <div class='div-th' style='width: 10%;' >total num</div>
+                <div class='div-th' style='width: 10%;' >duration</div>
+                <div class='div-th' style='width: 10%;' >QPS</div>
+                <div class='div-th' style='width: 10%; '>error</div>
+                <div class='clear'></div>
+             </div>
+            {% for d in details %}
+                <div class='div-tr level0' id='tr0'>
+                    <div class='div-td' style='width: 10%'>{{ d['group_num']+1 }}组</div>
+                    <div class='div-td' style='width: 10%'>{{ d['client_ip'] }}</div>
+                    <div class='div-td' style='width: 10%'>{{ d['server_ip'] }}</div>
+                    <div class='div-td' style='width: 10%'>{{ d['success_num'] }}</div>
+                    <div class='div-td' style='width: 10%'>{{ d['error_num'] }}</div>
+                    <div class='div-td' style='width: 10%'>{{ d.get('not_found_num', 0) }}</div>
+                    <div class='div-td' style='width: 10%;'>{{d.get('total_num',0)}}</div>
+                    {% if d.get('duration') %}
+                        <div class='div-td' style='width: 10%;'>{{d['duration']}}</div>
+                    {% else %}
+                        <div class='div-td' style='width: 10%;'>&nbsp;</div>
+                    {% end %}
+
+                    {% if d.get('duration') %}
+                        <div class='div-td' style='width: 10%;'>{{int(int(d.get('total_num',0))/float(d['duration']))}}</div>
+                    {% else %}
+                        <div class='div-td' style='width: 10%;'>&nbsp;</div>
+                    {% end %}
+
+                    <div class='div-td' style='width: 10%'>{{ d.get('send_error', 200) }}</div>
+                </div>
+            {% end %}
+        </div>
+    </div>
+</div>

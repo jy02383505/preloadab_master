@@ -1,0 +1,115 @@
+{% extends body.html %}
+{% block body %}
+
+    <div class="text-center">
+         <h3>定时文件预加载</h2>
+         <form class="form-inline" action="/tasks" method="post" id="queryForm">
+            <input type="text" placeholder="用户名 or 任务ID" name="query_id", value={{query_id}} >
+
+            <button type="submit" class="btn btn-primary ">查询</button>
+        </form>
+    </div>
+
+        <div class="">
+              <h1></h1>
+              <table class="table table-striped" style="">
+                  <tr>
+                      <th style="width: 200px;"><center>任务ID</center></th>
+                      <th style="width: 200px;"><center>用户名</center></th>
+                      <th style="width: 200px;"><center>资源URL</center></th>
+                      <th style="width: 200px;"><center>并发数</center></th>
+                      <th style="width: 200px;"><center>计划开始时间</center></th>
+                      <th style="width: 200px;"><center>开始时间</center></th>
+                      <th style="width: 200px;"><center>结束时间</center></th>
+                      <th style="width: 500px;"><center>客户端详情</center></th>
+                      <th style="width: 200px;"><center>执行详情</center></th>
+                      <th style="width: 200px;"><center>更改任务</center></th>
+                      <th style="width: 200px;"><center>删除任务</center></th>
+                   </tr>
+                    {% for task in all_tasks %}
+                    <tr>
+                      <td><center>{{task['_id']}}</center> </td>
+                      <td><center>{{task['username']}}</center> </td>
+                      <td><center>{{task['resource_url']}}</center> </td>
+                      <td><center>{{task.get('concurrency', 1600)}}</center> </td>
+                      <td><center>{{task['start_datetime'].strftime('%Y-%m-%d %H:%M') }}</center> </td>
+                      {% if task['run_datetime'] %}
+                          <td><center>{{task['run_datetime'].strftime('%Y-%m-%d %H:%M') }}</center> </td>
+                      {% else %}
+                        <td><center>暂未执行</center> </td>
+                      {% end %}
+                      {% if task.get('finish_datetime') %}
+                          <td><center>{{task['finish_datetime'].strftime('%Y-%m-%d %H:%M') }}</center> </td>
+                      {% else %}
+                          <td><center>暂未结束</center> </td>
+                      {% end %}
+                      <td>
+                          <table class="table table-striped">
+                            {% for n, detail in enumerate(task['group_detail']) %}
+                                <tr>
+                                    <td>
+                                        {{n+1}}-client:</br> {% raw '</br>'.join(detail[0]) %}
+                                    </td>
+                                    <td>
+                                        {{n+1}}-server:</br> {% raw '</br>'.join(detail[1]) %}
+                                    </td>
+                                </tr>
+                            {% end %}
+                           </table>
+                      </td>
+                      <td><center><a class="btn btn-info" href="/task/detail/{{task['_id']}}" rel="detail">详情</a></center> </td>
+                      {% if author_secure == 'admin' %}
+                          <td><center><a class="btn btn-info" href="/task/change/{{task['_id']}}" rel="rewrite">更改</a></center> </td>
+                          <td><center><a class="btn btn-info" href="/task/del/{{task['_id']}}" rel="rewrite">删除</a></center> </td>
+                      {% else %}
+                           <td><center><a  href ="javascript:void(0);" class="btn btn-info" href="/task/change/{{task['_id']}}" disabled rel="rewrite">更改</a></center> </td>
+                           <td><center><a href ="javascript:void(0);" class="btn btn-info" href="/task/del/{{task['_id']}}" disabled rel="rewrite">删除</a></center> </td>
+                      {%end%}
+                    </tr>                  
+                    {% end %}
+              </table>
+        </div>
+
+        {% if totalpage >1 %}
+        <div class="pagination">
+              <ul>
+                  <li class="disabled"><a href="/tasks">&laquo;</a></li>
+                  {%for p in range(totalpage) %}
+                  <li ><a href="javascript:submitFrom({{p}});" {% if c_page == p %} class="btn" {% end %} >{{ p+1 }}</a></li>
+                 {% end %}
+              </ul>
+         </div>
+         {% end %}
+
+
+    <script type="text/javascript">
+       function submitFrom(curpage){
+          var f = document.getElementById("queryForm");
+          var input = document.createElement("input");
+          input.setAttribute("type","hidden");
+          input.setAttribute("value",curpage);
+          input.setAttribute("name","c_page");
+          f.appendChild(input);
+          f.submit();
+        };
+        $(document).ready(function() {
+            $("a[rel=detail]").fancybox({
+                'width': "1300",
+                'height': "1024",
+                'autoScale': false,
+                'centerOnScroll': false,
+                'padding': 28,
+                'margin': 48,
+                'scrolling': "no",
+                'overlayOpacity': 0.4,
+                'overlayColor': "#979b8f",
+                'transitionIn': "elastic",
+                'transitionOut': "elastic",
+                'enableEscapeButton': true,
+                'showNavArrows':false
+        })});
+
+    </script>
+
+{% end %}
+

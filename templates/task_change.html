@@ -1,0 +1,163 @@
+{% extends body.html %}
+{% block body %}
+
+    <div class="text-center">
+        <h3>定时预加载任务修改</h3>
+    </div>
+    <div class="container">
+        <form class="form-inline" action="/task/change/{{task['_id']}}" method="post" id="task_change">
+        <table class="table table-striped">
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">用户名:</th>
+                <td style="width:50%"><input name='username' type="textarea" value={{task['username']}}></input></td>
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">时间:</th>
+                <td style="width:50%">
+                    <input type="text" class="input-medium" id="datepickera_start" name="start_datetime"  readonly="true" value="{{start_datetime}}">
+                </td>
+
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">资源URL:</th>
+                <td style="width:50%"><input name='resource_url' type="textarea" value={{task['resource_url']}}></input></td>
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">并发数:</th>
+                <td style="width:50%"><input name='concurrency' type="textarea" value={{task['concurrency']}}></input></td>
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">设备组:</th>
+                <input id=group_n name='group_num' type="hidden" value={{len(task['group_detail'])}}></input>
+
+                <td style="width:50%">
+                    <table class="table table-striped" id="group_table">
+                        {% for n, group in enumerate(task["group_detail"]) %}
+                        <tr id='{{n+1}}_client_row' >
+                            <td>
+                                <div class="input-prepend">
+                                    <span class="add-on">{{n+1}}-client</span>
+                                    <input class="form-control" type="textarea" placeholder="Enter ip&ip" name="{{n+1}}-client" value={{'&'.join(group[0])}}>
+                                </div>&nbsp;&nbsp;
+                                {% if n== 0 %}
+                                <button type="button" class="btn btn-primary" onclick="add_group()">新增</button>
+                                <button type="button" class="btn btn-primary" onclick="del_group()">删除</button>
+                                {% end %}
+
+                            </td>
+                        </tr>
+                        <tr id='{{n+1}}_server_row'>
+                            <td>
+                                <div class="input-prepend">
+                                    <span class="add-on">{{n+1}}-server</span>
+                                    <input class="form-control" type="textarea" placeholder="Enter ip&ip" name="{{n+1}}-server" value={{'&'.join(group[1])}}>
+                                </div>
+                            </td>
+                        </tr>
+                        {% end %}
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;padding-right:60px;width:50%">
+                    &nbsp;
+                </td>
+                <td style="width:50%">
+                    <button type="submit" class="btn btn-primary" onsubmit="return validate_form(this)" >保存</button>
+                </td>
+            </tr>
+        </table>
+        </form>
+
+    <script type="text/javascript">
+
+    function trim(s){
+        return s.replace(/(^\s*)|(\s*$)/g, "");
+    }
+
+    function init_group(){
+        var current_num = $('#group_n')[0].value;
+        var group_table = $('#group_table')[0];
+        var new_rows = [0,1];
+        var current_list = [];
+        for(var i=0; i<Number(current_num);i++){
+            current_list[i] = i;
+        }
+        $.each(current_list, function(i){
+            $.each(new_rows, function(j){
+                var new_num = i + 1;
+                var new_row = group_table.insertRow();
+                var cell = new_row.insertCell();
+                if (j==0){
+                    new_row.id = new_num + '_client_row';
+                    _html = "<div class='input-prepend'><span class='add-on'>" + new_num + "-client</span><input class='form-control' type='textarea' placeholder='Enter ip&ip' name='"+ new_num + "-client'></div>" ;
+                }else{
+                    new_row.id = new_num + '_server_row';
+                    _html = "<div class='input-prepend'><span class='add-on'>" + new_num + "-server</span><input class='form-control' type='textarea' placeholder='Enter ip&ip' name='"+ new_num + "-server'></div>";
+                }
+                //添加　新增删除
+                if(i==0 && j==0){
+                    _html += "<button type='button' class='btn btn-primary' onclick='add_group()'>新增</button>&nbsp"
+                    _html += "<button type='button' class='btn btn-primary' onclick='del_group()'>删除</button>"
+                }
+                cell.innerHTML = _html;
+            })
+
+        })
+
+        }
+
+    $(document).ready(function(){
+        //do something
+        //init_group()
+    })
+
+
+    function add_group(){
+
+        var current_num = $('#group_n')[0].value;
+        var new_num = Number(current_num) + 1
+        var group_table = $('#group_table')[0];
+        var new_rows = [0,1]
+        $.each(new_rows, function(i){
+            var new_row = group_table.insertRow();
+            var cell = new_row.insertCell()
+            if (i==0){
+                new_row.id = new_num + '_client_row'
+                _html = "<div class='input-prepend'><span class='add-on'>" + new_num + "-client</span><input class='form-control' type='textarea' placeholder='Enter ip&ip' name='"+ new_num + "-client'></div>"
+            }else{
+                new_row.id = new_num + '_server_row'
+                _html = "<div class='input-prepend'><span class='add-on'>" + new_num + "-server</span><input class='form-control' type='textarea' placeholder='Enter ip&ip' name='"+ new_num + "-server'></div>"
+            }
+            cell.innerHTML = _html
+        })
+        $('#group_n')[0].value = String(new_num)
+
+    }
+
+
+    function del_group(){
+
+       var current_num = $('#group_n')[0].value;
+       if (current_num == 1){return};
+       var client_row = $('#' + current_num + '_client_row')[0];
+       var server_row = $('#'+ current_num + '_server_row')[0];
+       var group_table = $('#group_table')[0];
+       group_table.deleteRow(client_row.rowIndex);
+       group_table.deleteRow(server_row.rowIndex);
+       $('#group_n')[0].value = Number(current_num) - 1
+
+    }
+
+    $(document).ready(function(){
+        $('#datepickera_start').datetimepicker({
+            dateFormat: "yy-mm-dd",
+            })
+    })
+
+
+    </script>
+
+
+
+{% end %}

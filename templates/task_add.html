@@ -1,0 +1,156 @@
+{% extends body.html %}
+{% block body %}
+
+    <div class="text-center">
+        <h3>预加载任务添加</h3>
+    </div>
+    <div class="container">
+         <form class="form-inline" action="/task/add" method="post" id="task_add">
+        <table class="table table-striped">
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">用户名:</th>
+                <td style="width:50%"><input name='username' type="textarea"></input></td>
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">执行形式:</th>
+                <td style="width:50%">
+                    <select id="type_select" name="type_select">
+                        <option value="normal">定日定时</option>
+                        <option value="everyday">每日定时</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">时间:</th>
+                <td style="width:50%">
+                    <input type="text" class="input-medium" id="datepickera_start" name="start_datetime"  readonly="true" value=""/>
+                    <input type="text" class="input-medium" id="timepickera_start" name="start_time"  readonly="true" value=""/>
+                </td>
+
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">资源URL:</th>
+                <td style="width:50%"><input name='resource_url' type="textarea"></input></td>
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">并发数:</th>
+                <td style="width:50%"><input name='concurrency' type="textarea" value=1600></input></td>
+            </tr>
+            <tr>
+                <th style="text-align:right;padding-right:60px;width:50%">设备组:</th>
+                <input id=group_n name='group_num' type="hidden" value=1></input>
+
+                <td style="width:50%">
+                    <table class="table table-striped" id="group_table">
+                        <tr id="1_client_row">
+                            <td>
+                                <div class="input-prepend">
+                                    <span class="add-on">1-client</span>
+                                    <input class="form-control" type="textarea" placeholder="Enter ip&ip" name="1-client">
+                                </div>&nbsp;&nbsp;
+                                <button type="button" class="btn btn-primary" onclick="add_group()">新增</button>
+                                <button type="button" class="btn btn-primary" onclick="del_group()">删除</button>
+
+                            </td>
+                        </tr>
+                        <tr id="1_server_row">
+                            <td>
+                                <div class="input-prepend">
+                                    <span class="add-on">1-server</span>
+                                    <input class="form-control" type="textarea" placeholder="Enter ip&ip" name="1-server">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:right;padding-right:60px;width:50%">
+                    &nbsp;
+                </td>
+                <td style="width:50%">
+                    <button type="submit" class="btn btn-primary" onsubmit="return validate_form(this)" >保存</button>
+                </td>
+            </tr>
+        </table>
+        </form>
+
+    <script type="text/javascript">
+
+       function trim(s){
+           return s.replace(/(^\s*)|(\s*$)/g, "");
+        }
+
+
+    function add_group(){
+
+        var current_num = $('#group_n')[0].value;
+        var new_num = Number(current_num) + 1
+        var group_table = $('#group_table')[0];
+        var new_rows = [0,1]
+        $.each(new_rows, function(i){
+            var new_row = group_table.insertRow();
+            var cell = new_row.insertCell()
+            if (i==0){
+                new_row.id = new_num + '_client_row'
+                _html = "<div class='input-prepend'><span class='add-on'>" + new_num + "-client</span><input class='form-control' type='textarea' placeholder='Enter ip&ip' name='"+ new_num + "-client'></div>"
+            }else{
+                new_row.id = new_num + '_server_row'
+                _html = "<div class='input-prepend'><span class='add-on'>" + new_num + "-server</span><input class='form-control' type='textarea' placeholder='Enter ip&ip' name='"+ new_num + "-server'></div>"
+            }
+            cell.innerHTML = _html
+        })
+        $('#group_n')[0].value = String(new_num)
+
+    }
+
+
+    function del_group(){
+
+       var current_num = $('#group_n')[0].value;
+       if (current_num == 1){return};
+       var client_row = $('#' + current_num + '_client_row')[0];
+       var server_row = $('#'+ current_num + '_server_row')[0];
+       var group_table = $('#group_table')[0];
+       group_table.deleteRow(client_row.rowIndex);
+       group_table.deleteRow(server_row.rowIndex);
+       $('#group_n')[0].value = Number(current_num) - 1
+
+    }
+
+    $(document).ready(function(){
+
+        $('#datepickera_start').datetimepicker({
+            dateFormat: "yy-mm-dd",
+        });
+        $('#timepickera_start').timepicker({
+        });
+
+        if ($('#type_select').val() == 'normal'){
+            $('#timepickera_start').hide()
+            $('#datepickera_start').show()
+        }else{
+            $('#datepickera_start').hide()
+            $('#timepickera_start').show()
+        }
+
+    })
+
+    $('#type_select').change(function(){
+
+        if ($('#type_select').val() == 'normal'){
+            $('#timepickera_start').hide()
+            $('#datepickera_start').show()
+        }else{
+            $('#datepickera_start').hide()
+            $('#timepickera_start').show()
+        }
+    })
+
+
+
+    </script>
+
+
+
+{% end %}
